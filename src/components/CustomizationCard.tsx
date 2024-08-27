@@ -38,13 +38,9 @@ export default function CustomizationCard() {
         <div className="border rounded-lg p-4">
           
           <div className="flex items-center justify-center h-48 bg-gray-100">
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="30" r="20" fill="black" />
-              <line x1="50" y1="50" x2="50" y2="80" stroke="black" strokeWidth="4" />
-              <line x1="20" y1="60" x2="80" y2="60" stroke="black" strokeWidth="4" />
-              <line x1="50" y1="80" x2="30" y2="100" stroke="black" strokeWidth="4" />
-              <line x1="50" y1="80" x2="70" y2="100" stroke="black" strokeWidth="4" />
-            </svg>
+            {/* <canvas width="100" height="100">
+                
+            </canvas> */}
           </div>
         </div>
       </CardContent>
