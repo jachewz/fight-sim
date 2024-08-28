@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
+import { DrawingBoard } from '@/components/DrawingBoard';
+
 export default function CustomizationCard() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -18,11 +20,20 @@ export default function CustomizationCard() {
     // Implement fight logic here
   };
 
+  const handleClear = () => {
+    console.log('Clearing canvas');
+    
+  }
+
   return (
-    <Card className="w-full mx-auto">
+    <Card className="">
       <CardHeader className="text-2xl font-bold">Character customization</CardHeader>
-      <CardContent className="grid grid-cols-2 gap-4">
+      <CardContent className="gap-4">
         <div className="space-y-4">
+          <div className="border rounded-lg">
+            <DrawingBoard />
+            <Button onClick={handleClear}>Clear</Button>
+          </div>
           <Input
             placeholder="name"
             value={name}
@@ -34,16 +45,10 @@ export default function CustomizationCard() {
             onChange={(e) => setDescription(e.target.value)}
             className="h-32"
           />
-        </div>
-        <div className="border rounded-lg p-4">
-          
-          <div className="flex items-center justify-center h-48 bg-gray-100">
-            {/* <canvas width="100" height="100">
-                
-            </canvas> */}
-          </div>
+
         </div>
       </CardContent>
+
       <CardFooter className="flex justify-end space-x-2">
         <Button onClick={handleSave}>Save</Button>
         <Button onClick={handleFight} variant="secondary">Fight</Button>
