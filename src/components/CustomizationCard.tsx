@@ -1,59 +1,73 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-
-import { DrawingBoard } from '@/components/DrawingBoard';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Toolbar } from "./Toolbar";
+import { Canvas } from "./Canvas";
 
 export default function CustomizationCard() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [drawingName, setDrawingName] = useState("Untitled Drawing");
+  const [tool, setTool] = useState("draw");
+  const [color, setColor] = useState("#000000");
+  const [history, setHistory] = useState<ImageData[]>([]); // latest image data is last in array
 
-  const handleSave = () => {
-    console.log('Saving character:', { name, description });
-    // Implement save logic here
+  const handleDraw = (imageData: ImageData) => {
+    setHistory((prev) => [...prev, imageData]);
   };
 
-  const handleFight = () => {
-    console.log('Starting fight with character:', { name, description });
-    // Implement fight logic here
+  const handleUndo = () => {
+    if (history.length > 1) {
+      const newHistory = history.slice(0, -1);
+      setHistory(newHistory);
+    } else if (history.length === 1) {
+      setHistory([]);
+    }
   };
 
   const handleClear = () => {
-    console.log('Clearing canvas');
-    
-  }
+    setHistory([]);
+  };
+
+  const handleSave = () => {
+    console.log(`Saving drawing: ${drawingName}`);
+    console.log("Canvas data:", history[history.length - 1]);
+    // Here you would typically send the data to a server or save it locally
+  };
 
   return (
-    <Card className="">
-      <CardHeader className="text-2xl font-bold">Character customization</CardHeader>
-      <CardContent className="gap-4">
-        <div className="space-y-4">
-          <div className="border rounded-lg">
-            <DrawingBoard />
-            <Button onClick={handleClear}>Clear</Button>
-          </div>
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle>
           <Input
-            placeholder="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder="Drawing Name"
+            value={drawingName}
+            onChange={(e) => setDrawingName(e.target.value)}
+            className="text-lg font-bold"
           />
-          <Textarea
-            placeholder="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="h-32"
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-4">
+        <div
+          className="relative w-full"
+          style={{ height: "calc(100vh - 200px)" }}
+        >
+          <Toolbar
+            tool={tool}
+            color={color}
+            onToolChange={setTool}
+            onColorChange={setColor}
+            onUndo={handleUndo}
+            onClear={handleClear}
+            onSave={handleSave}
           />
-
+          <Canvas
+            tool={tool}
+            color={color}
+            currentImageData={history[history.length - 1] || null}
+            onDraw={handleDraw}
+          />
         </div>
       </CardContent>
-
-      <CardFooter className="flex justify-end space-x-2">
-        <Button onClick={handleSave}>Save</Button>
-        <Button onClick={handleFight} variant="secondary">Fight</Button>
-      </CardFooter>
     </Card>
   );
 }
-
