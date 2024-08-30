@@ -1,6 +1,6 @@
 import { Paintbrush, Eraser, Undo2, Trash2, Save } from "lucide-react";
 import { ToolbarButton } from "@/components/ToolbarButton";
-import { ColorPicker } from "@/components/ColorPicker";
+import { BrushButton } from "@/components/BrushButton";
 
 interface ToolbarProps {
   tool: string;
@@ -37,7 +37,11 @@ export function Toolbar({
       />
       <ToolbarButton icon={Undo2} label="Undo" onClick={onUndo} />
       <ToolbarButton icon={Trash2} label="Clear" onClick={onClear} />
-      <ColorPicker color={color} onChange={onColorChange} />
+      <BrushButton
+        onClick={() => onToolChange("draw")}
+        isActive={tool === "draw"}
+        color={color}
+        onColorSelect={onColorChange} />
       <ToolbarButton icon={Save} label="Save" onClick={onSave} />
     </div>
   );
