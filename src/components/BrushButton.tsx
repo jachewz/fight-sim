@@ -1,54 +1,63 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Paintbrush } from 'lucide-react'
-import { cn } from "@/lib/utils"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export function BrushButton({
   color,
-onColorSelect,
+  size,
+  onColorSelect,
+  onSizeSelect,
   onClick,
+  isActive,
 }: {
-  color: string
-  onColorSelect: (color: string) => void
-  onClick: () => void
+  color: string;
+  size: number;
+  onColorSelect: (color: string) => void;
+  onSizeSelect: (size: number) => void;
+  onClick: () => void;
+  isActive: boolean;
 }) {
   const solids = [
-    '#E2E2E2',
-    '#ff75c3',
-    '#ffa647',
-    '#ffe83f',
-    '#9fff5b',
-    '#70e2ff',
-    '#cd93ff',
-    '#09203f',
-  ]
+    "#E2E2E2",
+    "#ff75c3",
+    "#ffa647",
+    "#ffe83f",
+    "#9fff5b",
+    "#70e2ff",
+    "#cd93ff",
+    "#000000",
+  ];
+
+  const brushSizes = [2, 5, 10];
 
   const handleColorChange = (color: string) => {
-    onColorSelect(color)
-    onClick()
-  }
+    onColorSelect(color);
+    onClick();
+  };
+
+  const handleSizeChange = (size: number) => {
+    onSizeSelect(size);
+    onClick();
+  };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={'outline'}
-          className={cn(
-            ' ',
-            !color && 'text-muted-foreground',
-          )}
+          variant={isActive ? "default" : "outline"}
+          size="icon"
+          className={cn("", !color && "text-muted-foreground")}
         >
-
-            {color ? (
-              <div
-                className="h-4 w-4 rounded !bg-center !bg-cover transition-all"
-                style={{ color }}
-              ></div>
-            ) : (
-              <Paintbrush className="h-4 w-4" />
-            )}
-
+          <div
+            className="h-4 w-4 rounded-full"
+            style={{ backgroundColor: color }}
+          ></div>
+          <span className="sr-only">Choose brush color and size</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64">
@@ -56,7 +65,7 @@ onColorSelect,
           {solids.map((s) => (
             <div
               key={s}
-              style={{ background: s }}
+              style={{ backgroundColor: s }}
               className="rounded-md h-6 w-6 cursor-pointer active:scale-105"
               onClick={() => handleColorChange(s)}
             />
@@ -65,10 +74,27 @@ onColorSelect,
         <Input
           id="custom"
           value={color}
-          className="col-span-2 h-8"
+          className="col-span-2 h-8 mb-4"
           onChange={(e) => handleColorChange(e.currentTarget.value)}
         />
+        <div className="flex justify-between px-6">
+          {brushSizes.map((s) => (
+            <Button
+              key={s}
+              variant={size === s ? "default" : "outline"}
+              onClick={() => handleSizeChange(s)}
+            >
+              <div
+                className="rounded-full bg-foreground"
+                style={{
+                  width: `${s}px`,
+                  height: `${s}px`,
+                }}
+              />
+            </Button>
+          ))}
+        </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

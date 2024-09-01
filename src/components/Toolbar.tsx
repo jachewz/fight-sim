@@ -1,31 +1,35 @@
-import { Paintbrush, Eraser, Undo2, Trash2, Save } from "lucide-react";
-import { ToolbarButton } from "@/components/ToolbarButton";
-import { BrushButton } from "@/components/BrushButton";
+import { Eraser, Undo2, Trash2 } from "lucide-react";
+import { ToolbarButton } from "./ToolbarButton";
+import { BrushButton } from "./BrushButton";
 
 interface ToolbarProps {
   tool: string;
   color: string;
+  size: number;
   onToolChange: (tool: string) => void;
   onColorChange: (color: string) => void;
+  onSizeChange: (size: number) => void;
   onUndo: () => void;
   onClear: () => void;
-  onSave: () => void;
 }
 
 export function Toolbar({
   tool,
   color,
+  size,
   onToolChange,
   onColorChange,
+  onSizeChange,
   onUndo,
   onClear,
-  onSave,
 }: ToolbarProps) {
   return (
-    <div className="absolute top-0 left-0 z-10 flex w-full items-center justify-center space-x-2 bg-background/80 p-2 backdrop-blur-sm">
-      <ToolbarButton
-        icon={Paintbrush}
-        label="Draw"
+    <div className="flex flex-col items-center space-y-4 bg-background/80 p-4 rounded-lg backdrop-blur-sm">
+      <BrushButton
+        color={color}
+        size={size}
+        onColorSelect={onColorChange}
+        onSizeSelect={onSizeChange}
         onClick={() => onToolChange("draw")}
         isActive={tool === "draw"}
       />
@@ -37,12 +41,6 @@ export function Toolbar({
       />
       <ToolbarButton icon={Undo2} label="Undo" onClick={onUndo} />
       <ToolbarButton icon={Trash2} label="Clear" onClick={onClear} />
-      <BrushButton
-        onClick={() => onToolChange("draw")}
-        isActive={tool === "draw"}
-        color={color}
-        onColorSelect={onColorChange} />
-      <ToolbarButton icon={Save} label="Save" onClick={onSave} />
     </div>
   );
 }

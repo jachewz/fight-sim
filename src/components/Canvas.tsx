@@ -1,13 +1,20 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 interface CanvasProps {
   tool: string;
   color: string;
+  size: number;
   currentImageData: ImageData | null;
   onDraw: (imageData: ImageData) => void;
 }
 
-export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
+export function Canvas({
+  tool,
+  color,
+  size,
+  currentImageData,
+  onDraw,
+}: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -21,7 +28,6 @@ export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
       if (context) {
         context.lineCap = "round";
         context.lineJoin = "round";
-        context.lineWidth = 5;
         setCtx(context);
       }
     }
@@ -37,6 +43,7 @@ export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
 
   useEffect(() => {
     if (ctx) {
+      ctx.lineWidth = size;
       if (tool === "draw") {
         ctx.globalCompositeOperation = "source-over";
         ctx.strokeStyle = color;
@@ -44,7 +51,7 @@ export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
         ctx.globalCompositeOperation = "destination-out";
       }
     }
-  }, [tool, color, ctx]);
+  }, [tool, color, size, ctx]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!ctx) return;
@@ -60,7 +67,7 @@ export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
   };
 
   const stopDrawing = () => {
-    if (!ctx || !canvasRef.current || !isDrawing) return;
+    if (!ctx || !canvasRef.current) return;
     setIsDrawing(false);
     ctx.closePath();
     onDraw(
@@ -75,7 +82,7 @@ export function Canvas({ tool, color, currentImageData, onDraw }: CanvasProps) {
       onMouseMove={draw}
       onMouseUp={stopDrawing}
       onMouseOut={stopDrawing}
-      className="absolute top-0 left-0 h-full w-full cursor-crosshair bg-white"
+      className="w-full h-full cursor-crosshair bg-white rounded-lg"
     />
   );
 }
