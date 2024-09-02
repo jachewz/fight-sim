@@ -7,9 +7,17 @@ import { Toolbar } from "./Toolbar";
 import { Canvas } from "./Canvas";
 import { Save } from "lucide-react";
 
-export default function CustomizationCard() {
-  const [drawingName, setDrawingName] = useState("Untitled Drawing");
-  const [description, setDescription] = useState("");
+import type { Character } from "@/lib/types";
+
+export default function CustomizationCard({
+  character,
+  onSave,
+}: {
+  character: Character;
+  onSave: (c: Character) => void;
+}) {
+  const [drawingName, setDrawingName] = useState(character.name);
+  const [description, setDescription] = useState(character.description);
   const [tool, setTool] = useState("draw");
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(5);
@@ -49,13 +57,17 @@ export default function CustomizationCard() {
 
   const handleSave = () => {
     if (ctx) {
-      const dataURL = ctx.canvas.toDataURL();
-      console.log(`Saving drawing: ${drawingName}`);
-      console.log(`Description: ${description}`);
-      console.log("Canvas data URL:", dataURL);
-      // Here you would typically send the data to a server or save it locally
+      const imageData = ctx.canvas.toDataURL();
+      const newCharacter: Character = {
+        ...character,
+        name: drawingName,
+        description,
+        image: imageData
+      };
+
+      onSave(newCharacter);
     } else {
-      console.error("Canvas context is not available");
+      console.error("Canvas context not found while saving");
     }
   };
 
