@@ -17,6 +17,7 @@ export default function CustomizationCard() {
   const [currentImageData, setCurrentImageData] = useState<ImageData | null>(
     null
   );
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
     if (history.length > 0) {
@@ -41,17 +42,25 @@ export default function CustomizationCard() {
 
   const handleClear = () => {
     setHistory([]);
+    if (ctx) {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
   };
 
   const handleSave = () => {
-    console.log(`Saving drawing: ${drawingName}`);
-    console.log(`Description: ${description}`);
-    console.log("Canvas data:", currentImageData);
-    // Here you would typically send the data to a server or save it locally
+    if (ctx) {
+      const dataURL = ctx.canvas.toDataURL();
+      console.log(`Saving drawing: ${drawingName}`);
+      console.log(`Description: ${description}`);
+      console.log("Canvas data URL:", dataURL);
+      // Here you would typically send the data to a server or save it locally
+    } else {
+      console.error("Canvas context is not available");
+    }
   };
 
   return (
-    <div className="flex gap-4 w-full max-w-5xl mx-auto p-4">
+    <div className="flex gap-2 w-full max-w-5xl mx-auto p-4">
       <Toolbar
         tool={tool}
         color={color}
@@ -64,8 +73,8 @@ export default function CustomizationCard() {
       />
       <div className="flex-grow flex flex-col gap-4">
         <Card
-          className="w-full bg-gradient-to-br aspect-[5/7] \
-        from-primary/20 to-secondary/20 border-4 border-primary/50 rounded-xl overflow-hidden"
+          className="w-full bg-gradient-to-br aspect-[5/7] 
+        from-primary/20 to-secondary/20 border-4 border-primary/50 rounded-xl overflow-clip"
         >
           <CardTitle className="text-center text-2xl font-bold text-primary px-2 pt-2">
             <Input
@@ -85,14 +94,15 @@ export default function CustomizationCard() {
                 size={size}
                 currentImageData={currentImageData}
                 onDraw={handleDraw}
+                setCtx={setCtx}
               />
             </div>
           </CardContent>
-          <CardFooter className="flex-grow">
+          <CardFooter className="px-4 pt-2">
             <Textarea
               placeholder="Add a description for your drawing..."
               value={description}
-              maxLength={200}
+              maxLength={100}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-transparent border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"
             />

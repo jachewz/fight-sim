@@ -6,6 +6,7 @@ interface CanvasProps {
   size: number;
   currentImageData: ImageData | null;
   onDraw: (imageData: ImageData) => void;
+  setCtx: React.Dispatch<React.SetStateAction<CanvasRenderingContext2D | null>>;
 }
 
 export function Canvas({
@@ -14,9 +15,9 @@ export function Canvas({
   size,
   currentImageData,
   onDraw,
+  setCtx,
 }: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {
@@ -24,55 +25,73 @@ export function Canvas({
     if (canvas) {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-      const context = canvas.getContext("2d");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
       if (context) {
         context.lineCap = "round";
         context.lineJoin = "round";
         setCtx(context);
       }
     }
-  }, []);
+  }, [setCtx]);
 
   useEffect(() => {
-    if (ctx && currentImageData) {
-      ctx.putImageData(currentImageData, 0, 0);
-    } else if (ctx && !currentImageData) {
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    }
-  }, [ctx, currentImageData]);
-
-  useEffect(() => {
-    if (ctx) {
-      ctx.lineWidth = size;
-      if (tool === "draw") {
-        ctx.globalCompositeOperation = "source-over";
-        ctx.strokeStyle = color;
-      } else if (tool === "erase") {
-        ctx.globalCompositeOperation = "destination-out";
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const context = canvas.getContext("2d");
+      if (context) {
+        if (currentImageData) {
+          context.putImageData(currentImageData, 0, 0);
+        } else {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        }
       }
     }
-  }, [tool, color, size, ctx]);
+  }, [currentImageData]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.lineWidth = size;
+        if (tool === "draw") {
+          context.globalCompositeOperation = "source-over";
+          context.strokeStyle = color;
+        } else if (tool === "erase") {
+          context.globalCompositeOperation = "destination-out";
+        }
+      }
+    }
+  }, [tool, color, size]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!ctx) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
     setIsDrawing(true);
-    ctx.beginPath();
-    ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    context.beginPath();
+    context.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !ctx) return;
-    ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    ctx.stroke();
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    context.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    context.stroke();
   };
 
   const stopDrawing = () => {
-    if (!ctx || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
     setIsDrawing(false);
-    ctx.closePath();
-    onDraw(
-      ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)
-    );
+    context.closePath();
+    onDraw(context.getImageData(0, 0, canvas.width, canvas.height));
   };
 
   return (
