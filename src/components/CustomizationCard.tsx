@@ -84,7 +84,7 @@ export default function CustomizationCard({
   };
 
   return (
-    <div className="flex gap-2 w-full max-w-5xl mx-auto p-4">
+    <div className="flex gap-2 w-full justify-center max-w-5xl mx-auto p-4">
       <Toolbar
         tool={tool}
         color={color}
@@ -95,9 +95,9 @@ export default function CustomizationCard({
         onUndo={handleUndo}
         onClear={handleClear}
       />
-      <div className="flex-grow flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <Card
-          className="w-full bg-gradient-to-br aspect-[5/7] 
+          className="bg-gradient-to-br aspect-[5/7] 
         from-primary/20 to-secondary/20 border-4 border-primary/50 rounded-xl overflow-clip"
         >
           <CardTitle className="text-center text-2xl font-bold text-primary px-2 pt-2">

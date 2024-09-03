@@ -30,8 +30,8 @@ function App() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen">
-      <div className="flex flex-col items-center gap-y-4">
+    <main className="flex ">
+      <div className="flex flex-1 flex-col items-center justify-center h-screen gap-y-4">
         <CustomizationCard character={defaultCharacter} onSave={
           (c) => updateCharacter(c)
         } />
