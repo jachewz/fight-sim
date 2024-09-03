@@ -35,6 +35,18 @@ export default function CustomizationCard({
     }
   }, [history]);
 
+  useEffect(() => {
+    if (ctx) {
+      const image = new Image();
+      image.src = character.image;
+      image.onload = () => {
+        ctx.drawImage(image, 0, 0);
+        const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        setHistory([imageData]);
+      };
+    }
+  }, [ctx, character.image]);
+
   const handleDraw = (imageData: ImageData) => {
     setHistory((prev) => [...prev, imageData]);
   };
