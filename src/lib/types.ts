@@ -3,4 +3,6 @@ export type Character = {
     name: string;
     description: string;
     image: string;
+
+    userId: string; // FK -> users.id
 };

@@ -8,6 +8,7 @@ import { Canvas } from "./Canvas";
 import { Save } from "lucide-react";
 
 import type { Character } from "@/lib/types";
+import { LoginButton } from "./LoginButton";
 
 export default function CustomizationCard({
   character,
@@ -41,7 +42,12 @@ export default function CustomizationCard({
       image.src = character.image;
       image.onload = () => {
         ctx.drawImage(image, 0, 0);
-        const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const imageData = ctx.getImageData(
+          0,
+          0,
+          ctx.canvas.width,
+          ctx.canvas.height
+        );
         setHistory([imageData]);
       };
     }
@@ -74,7 +80,7 @@ export default function CustomizationCard({
         ...character,
         name: drawingName,
         description,
-        image: imageData
+        image: imageData,
       };
 
       onSave(newCharacter);
@@ -132,14 +138,34 @@ export default function CustomizationCard({
             />
           </CardFooter>
         </Card>
-        <Button
-          onClick={handleSave}
-          className="w-full bg-primary hover:bg-primary/90"
-        >
-          <Save className="mr-2 h-4 w-4" />
-          Save Drawing
-        </Button>
+        <SaveButton handleSave={handleSave} />
       </div>
     </div>
   );
+}
+
+function SaveButton({ handleSave }: { handleSave: () => void }) {
+  if (false) {
+    return (
+      <Button
+        onClick={handleSave}
+        className="w-full bg-primary hover:bg-primary/90"
+      >
+        <Save className="mr-2 h-4 w-4" />
+        Save Drawing
+      </Button>
+    );
+  }
+
+  return <LoginButton />;
+
+  // return (
+  //   <Button
+  //     onClick={handleSave}
+  //     className="w-full bg-primary hover:bg-primary/90"
+  //   >
+  //     <Save className="mr-2 h-4 w-4" />
+  //     Save Drawing
+  //   </Button>
+  // );
 }
