@@ -1,9 +1,9 @@
+import { useState, useEffect } from "react";
 import { init, tx, id } from "@instantdb/react";
 import { User } from "@instantdb/core";
 
 import CustomizationCard from "@/components/CustomizationCard";
 import type { Character } from "@/lib/types";
-import { useState, useEffect, useMemo } from "react";
 
 const db = init<{
   characters: Character;

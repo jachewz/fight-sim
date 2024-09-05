@@ -85,6 +85,7 @@ export function Canvas({
   };
 
   const stopDrawing = () => {
+    if (!isDrawing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
