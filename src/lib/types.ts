@@ -4,5 +4,5 @@ export type Character = {
     description: string;
     image: string;
 
-    userId: string; // FK -> users.id
+    // owner: User; // Link
 };

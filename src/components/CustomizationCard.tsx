@@ -13,9 +13,13 @@ import { LoginButton } from "./LoginButton";
 export default function CustomizationCard({
   character,
   onSave,
+  setIsEdited,
+  loggedIn,
 }: {
   character: Character;
   onSave: (c: Character) => void;
+  setIsEdited: (e: boolean) => void;
+  loggedIn: boolean;
 }) {
   const [drawingName, setDrawingName] = useState(character.name);
   const [description, setDescription] = useState(character.description);
@@ -53,8 +57,25 @@ export default function CustomizationCard({
     }
   }, [ctx, character.image]);
 
+  console.log(
+    "CustomizationCard render char id: %s, name: %s",
+    character.id,
+    character.name
+  );
+
+  const onNameChange = (name: string) => {
+    setDrawingName(name);
+    setIsEdited(true);
+  };
+
+  const onDescriptionChange = (name: string) => {
+    setDescription(name);
+    setIsEdited(true);
+  };
+
   const handleDraw = (imageData: ImageData) => {
     setHistory((prev) => [...prev, imageData]);
+    setIsEdited(true);
   };
 
   const handleUndo = () => {
@@ -112,7 +133,7 @@ export default function CustomizationCard({
               placeholder="Drawing Name"
               maxLength={30}
               value={drawingName}
-              onChange={(e) => setDrawingName(e.target.value)}
+              onChange={(e) => onNameChange(e.target.value)}
               className="text-center bg-transparent border-none focus:outline-none focus:ring-0"
             />
           </CardTitle>
@@ -133,39 +154,25 @@ export default function CustomizationCard({
               placeholder="Add a description for your drawing..."
               value={description}
               maxLength={100}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => onDescriptionChange(e.target.value)}
               className="w-full bg-transparent border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"
             />
           </CardFooter>
         </Card>
-        <SaveButton handleSave={handleSave} />
+        {loggedIn ? <SaveButton handleSave={handleSave} /> : <LoginButton />}
       </div>
     </div>
   );
 }
 
 function SaveButton({ handleSave }: { handleSave: () => void }) {
-  if (false) {
-    return (
-      <Button
-        onClick={handleSave}
-        className="w-full bg-primary hover:bg-primary/90"
-      >
-        <Save className="mr-2 h-4 w-4" />
-        Save Drawing
-      </Button>
-    );
-  }
-
-  return <LoginButton />;
-
-  // return (
-  //   <Button
-  //     onClick={handleSave}
-  //     className="w-full bg-primary hover:bg-primary/90"
-  //   >
-  //     <Save className="mr-2 h-4 w-4" />
-  //     Save Drawing
-  //   </Button>
-  // );
+  return (
+    <Button
+      onClick={handleSave}
+      className="w-full bg-primary hover:bg-primary/90"
+    >
+      <Save className="mr-2 h-4 w-4" />
+      Save Drawing
+    </Button>
+  );
 }

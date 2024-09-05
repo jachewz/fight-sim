@@ -1,81 +1,98 @@
-import { ReactNode } from "react";
-import { id, tx } from "@instantdb/react";
+import { init, tx, id } from "@instantdb/react";
+import { User } from "@instantdb/core";
 
 import CustomizationCard from "@/components/CustomizationCard";
 import type { Character } from "@/lib/types";
-import { db } from "@/config";
+import { useState, useEffect, useMemo } from "react";
 
-function Auth({ children }: { children: ReactNode }) {
-  const { isLoading, error, user } = db.useAuth();
+const db = init<{
+  characters: Character;
+}>({ appId: import.meta.env.VITE_INSTANT_APP_ID });
+
+function App() {
+  const { isLoading, user, error } = db.useAuth();
+
+  useEffect(() => {
+    if (user) {
+      db.transact(tx.users[user.id].update(user));
+      console.log("User effect");
+    }
+  }, [user]);
+
+  console.log("App render");
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (error) {
     return <div> Error fetching auth: {error.message}</div>;
   }
 
-  console.log(user);
-
-  if (user) {
-    // Update user data after login
-    db.transact(tx.users[user.id].update(user));
-  }
-
-  return <>{children}</>;
+  return <Main user={user} />;
 }
 
-function App() {
-  const { user } = db.useAuth();
-  const userId = user?.id ?? "anon";
-  const query = {
+function generateEmptyCharacter(): Character {
+  return {
+    id: id(),
+    name: "Untitled Character",
+    description: "",
+    image: "",
+  };
+}
+
+function Main({ user }: { user: User | undefined }) {
+  const [currentCharacter, setCurrentCharacter] = useState<Character>(
+    generateEmptyCharacter()
+  );
+  const [isEdited, setIsEdited] = useState(false);
+
+  const { isLoading, error, data } = db.useQuery({
     characters: {
       $: {
         where: {
-          ownerId: userId,
+          "owner.id": user?.id ?? "",
         },
       },
     },
-  };
-  const { isLoading, error, data } = db.useQuery(query);
+  });
 
-  console.log("App component: ", user);
+  useEffect(() => {
+    if (data && data.characters.length > 0 && !isEdited) {
+      // show latest character if there was no edits yet
+      setCurrentCharacter(data.characters[data.characters.length - 1]);
+    }
+  }, [data, isEdited]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (error) {
     return <div> Error fetching data: {error.message}</div>;
   }
 
-  const { characters } = data ?? [];
-
-  const defaultCharacter =
-    characters.length > 0
-      ? characters[0]
-      : {
-          id: id(),
-          name: "Untitled Character",
-          description: "",
-          image: "",
-          userId: userId,
-        };
-
   function updateCharacter(characterData: Character) {
-    db.transact(tx.characters[characterData.id].update(characterData));
+    if (!user) {
+      console.error("User is not logged in when trying to update character");
+      return;
+    }
+
+    db.transact(
+      tx.characters[characterData.id]
+        .update(characterData)
+        .link({ owner: user.id })
+    );
   }
 
   return (
     <main className="flex ">
       <div className="flex flex-1 flex-col items-center justify-center h-screen gap-y-4">
-        <Auth>
-          <CustomizationCard
-            character={defaultCharacter}
-            onSave={(c) => updateCharacter(c)}
-          />
-        </Auth>
+        <CustomizationCard
+          key={currentCharacter.id} // Reset the state when the character changes by changing the key
+          character={currentCharacter}
+          onSave={(c) => updateCharacter(c)}
+          setIsEdited={setIsEdited}
+          loggedIn={!!user}
+        />
       </div>
     </main>
   );

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@instantdb/core':
+        specifier: ^0.12.22
+        version: 0.12.22
       '@instantdb/react':
         specifier: ^0.12.14
         version: 0.12.14(react@18.3.1)
@@ -371,6 +374,9 @@ packages:
 
   '@instantdb/core@0.12.14':
     resolution: {integrity: sha512-gEt0x0UHcWlBA4bQ6MRRMVnvCS5L9k+mSRh9E14kTi72EGnoHX74bZzWMIRF7X2HQv6+Q6+o0PQjPkF5EM1LSw==}
+
+  '@instantdb/core@0.12.22':
+    resolution: {integrity: sha512-5FSKup3BoEqtpQ1KzmVgNeBPYjLs5SzukR3V+aG7I9lzDwv6qSyloHyrlleW1UMn//4hfrgV3uKVVGxff2A1Jw==}
 
   '@instantdb/react@0.12.14':
     resolution: {integrity: sha512-bMOqi1/Vs/vzY6pOIiYeReZZ8fOtBtw2Zwf/dHsGmV46BBYWiW+Fj/gLss1hS4m/Eix8lvdB/F9G3g1ad8jf7w==}
@@ -2192,6 +2198,12 @@ snapshots:
   '@humanwhocodes/object-schema@2.0.3': {}
 
   '@instantdb/core@0.12.14':
+    dependencies:
+      immer: 9.0.14
+      object-hash: 3.0.0
+      uuid: 9.0.1
+
+  '@instantdb/core@0.12.22':
     dependencies:
       immer: 9.0.14
       object-hash: 3.0.0
