@@ -3,6 +3,7 @@ import { init, tx, id } from "@instantdb/react";
 import { User } from "@instantdb/core";
 
 import CustomizationCard from "@/components/CustomizationCard";
+import CardDrawer from "@/components/CardDrawer";
 import type { Character } from "@/lib/types";
 
 const db = init<{
@@ -45,6 +46,7 @@ function Main({ user }: { user: User | undefined }) {
     generateEmptyCharacter()
   );
   const [isEdited, setIsEdited] = useState(false);
+  const [isCardDrawerOpen, setIsCardDrawerOpen] = useState(false);
 
   const { isLoading, error, data } = db.useQuery({
     characters: {
@@ -83,17 +85,32 @@ function Main({ user }: { user: User | undefined }) {
     );
   }
 
+  function onCharacterSelect(id: Character["id"]) {
+    setCurrentCharacter(
+      data?.characters.find((c) => c.id === id) || generateEmptyCharacter()
+    );
+  }
+
+  console.log("Main render drawer open?", isCardDrawerOpen);
+
   return (
     <main className="flex ">
-      <div className="flex flex-1 flex-col items-center justify-center h-screen gap-y-4">
+      <div className="flex flex-1 flex-row items-center justify-center h-screen gap-y-4">
         <CustomizationCard
           key={currentCharacter.id} // Reset the state when the character changes by changing the key
           character={currentCharacter}
           onSave={(c) => updateCharacter(c)}
+          triggerCardDrawer={() => setIsCardDrawerOpen(true)}
           setIsEdited={setIsEdited}
           loggedIn={!!user}
         />
       </div>
+      <CardDrawer
+        characters={data.characters}
+        isOpen={isCardDrawerOpen}
+        onOpenChange={setIsCardDrawerOpen}
+        onSelectCard={onCharacterSelect}
+      />
     </main>
   );
 }

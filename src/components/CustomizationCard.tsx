@@ -14,11 +14,13 @@ export default function CustomizationCard({
   character,
   onSave,
   setIsEdited,
+  triggerCardDrawer,
   loggedIn,
 }: {
   character: Character;
   onSave: (c: Character) => void;
   setIsEdited: (e: boolean) => void;
+  triggerCardDrawer: () => void;
   loggedIn: boolean;
 }) {
   const [drawingName, setDrawingName] = useState(character.name);
@@ -111,8 +113,9 @@ export default function CustomizationCard({
   };
 
   return (
-    <div className="flex gap-2 w-full justify-center max-w-5xl mx-auto p-4">
+    <div className="flex gap-2 w-full justify-center mx-auto p-4">
       <Toolbar
+        isLoggedIn={loggedIn}
         tool={tool}
         color={color}
         size={size}
@@ -121,6 +124,8 @@ export default function CustomizationCard({
         onSizeChange={setSize}
         onUndo={handleUndo}
         onClear={handleClear}
+        onOpen={triggerCardDrawer}
+        onSave={handleSave}
       />
       <div className="flex flex-col gap-4">
         <Card
