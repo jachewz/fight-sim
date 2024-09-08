@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { init, tx, id } from "@instantdb/react";
 import { User } from "@instantdb/core";
@@ -42,17 +43,20 @@ function generateEmptyCharacter(): Character {
 }
 
 function Main({ user }: { user: User | undefined }) {
+  const urlQuery = new URLSearchParams(useLocation().search);
+  const cidFromUrl = urlQuery.get("cid");
   const [currentCharacter, setCurrentCharacter] = useState<Character>(
     generateEmptyCharacter()
   );
   const [isEdited, setIsEdited] = useState(false);
   const [isCardDrawerOpen, setIsCardDrawerOpen] = useState(false);
 
+  // Get characters owned by the user + the character from the URL
   const { isLoading, error, data } = db.useQuery({
     characters: {
       $: {
         where: {
-          "owner.id": user?.id ?? "",
+          or: [{ "owner.id": user?.id ?? "" }, { id: cidFromUrl ?? "" }],
         },
       },
     },
@@ -66,7 +70,7 @@ function Main({ user }: { user: User | undefined }) {
   }, [data, isEdited]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    console.log("Loading...");
   }
   if (error) {
     return <div> Error fetching data: {error.message}</div>;
@@ -106,7 +110,7 @@ function Main({ user }: { user: User | undefined }) {
         />
       </div>
       <CardDrawer
-        characters={data.characters}
+        characters={data?.characters ?? []}
         isOpen={isCardDrawerOpen}
         onOpenChange={setIsCardDrawerOpen}
         onSelectCard={onCharacterSelect}
