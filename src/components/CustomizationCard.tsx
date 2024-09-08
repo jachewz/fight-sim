@@ -5,17 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Toolbar } from "./Toolbar";
 import { Canvas } from "./Canvas";
-import { Save } from "lucide-react";
 
 import type { Character } from "@/lib/types";
 import { LoginButton } from "./LoginButton";
+import { ShareDialog } from "./ShareDialog";
 
 export default function CustomizationCard({
   character,
   onSave,
   setIsEdited,
   triggerCardDrawer,
-  loggedIn,
+  loggedIn: isLoggedIn,
 }: {
   character: Character;
   onSave: (c: Character) => void;
@@ -33,6 +33,8 @@ export default function CustomizationCard({
     null
   );
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+  const [isSaved, setIsSaved] = useState(true);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   useEffect(() => {
     if (history.length > 0) {
@@ -68,16 +70,19 @@ export default function CustomizationCard({
   const onNameChange = (name: string) => {
     setDrawingName(name);
     setIsEdited(true);
+    setIsSaved(false);
   };
 
   const onDescriptionChange = (name: string) => {
     setDescription(name);
     setIsEdited(true);
+    setIsSaved(false);
   };
 
   const handleDraw = (imageData: ImageData) => {
     setHistory((prev) => [...prev, imageData]);
     setIsEdited(true);
+    setIsSaved(false);
   };
 
   const handleUndo = () => {
@@ -86,6 +91,11 @@ export default function CustomizationCard({
       setHistory(newHistory);
     } else if (history.length === 1) {
       setHistory([]);
+
+      // No changes to undo, so we're back to the original image which we assume
+      // to be saved (or empty)
+      setIsEdited(false);
+      setIsSaved(true);
     }
   };
 
@@ -106,16 +116,25 @@ export default function CustomizationCard({
         image: imageData,
       };
 
+      setIsSaved(true);
+
       onSave(newCharacter);
     } else {
       console.error("Canvas context not found while saving");
     }
   };
 
+  const handleShare = () => {
+    if (isLoggedIn && isSaved) {
+      setIsShareDialogOpen(true);
+    }
+  };
+
   return (
     <div className="flex gap-2 w-full justify-center mx-auto p-4">
       <Toolbar
-        isLoggedIn={loggedIn}
+        isLoggedIn={isLoggedIn}
+        isSaved={isSaved}
         tool={tool}
         color={color}
         size={size}
@@ -126,6 +145,7 @@ export default function CustomizationCard({
         onClear={handleClear}
         onOpen={triggerCardDrawer}
         onSave={handleSave}
+        onShare={handleShare}
       />
       <div className="flex flex-col gap-4">
         <Card
@@ -164,20 +184,32 @@ export default function CustomizationCard({
             />
           </CardFooter>
         </Card>
-        {loggedIn ? <SaveButton handleSave={handleSave} /> : <LoginButton />}
+        {isLoggedIn ? (
+          <DuelButton
+            handleDuel={() => {
+              console.log("DUEL!");
+            }}
+          />
+        ) : (
+          <LoginButton />
+        )}
       </div>
+      <ShareDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        characterId={character.id}
+      />
     </div>
   );
 }
 
-function SaveButton({ handleSave }: { handleSave: () => void }) {
+function DuelButton({ handleDuel }: { handleDuel: () => void }) {
   return (
     <Button
-      onClick={handleSave}
+      onClick={handleDuel}
       className="w-full bg-primary hover:bg-primary/90"
     >
-      <Save className="mr-2 h-4 w-4" />
-      Save Drawing
+      FIGHT!
     </Button>
   );
 }
