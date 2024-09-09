@@ -1,5 +1,5 @@
-import { useSearchParams } from 'next/navigation';
-import { useState, useEffect, use } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { init, tx, id } from "@instantdb/react";
 import { User } from "@instantdb/core";
 
@@ -9,7 +9,7 @@ import type { Character } from "@/lib/types";
 
 const db = init<{
   characters: Character;
-}>({ appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID?? "" });
+}>({ appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID ?? "" });
 
 function App() {
   const { isLoading, user, error } = db.useAuth();
