@@ -1,5 +1,5 @@
-import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, use } from "react";
 import { init, tx, id } from "@instantdb/react";
 import { User } from "@instantdb/core";
 
@@ -9,7 +9,7 @@ import type { Character } from "@/lib/types";
 
 const db = init<{
   characters: Character;
-}>({ appId: import.meta.env.VITE_INSTANT_APP_ID });
+}>({ appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID?? "" });
 
 function App() {
   const { isLoading, user, error } = db.useAuth();
@@ -21,7 +21,7 @@ function App() {
     }
   }, [user]);
 
-  console.log("App render");
+  console.log("App render app id: ", process.env.NEXT_PUBLIC_INSTANT_APP_ID);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -43,7 +43,7 @@ function generateEmptyCharacter(): Character {
 }
 
 function Main({ user }: { user: User | undefined }) {
-  const urlQuery = new URLSearchParams(useLocation().search);
+  const urlQuery = useSearchParams();
   const cidFromUrl = urlQuery.get("cid");
   const [currentCharacter, setCurrentCharacter] = useState<Character>(
     generateEmptyCharacter()

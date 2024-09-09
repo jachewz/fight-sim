@@ -10,7 +10,7 @@ export function LoginButton() {
   const [nonce] = useState(crypto.randomUUID());
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
       <div>
         <GoogleLogin
           nonce={nonce}
@@ -23,7 +23,7 @@ export function LoginButton() {
 
             db.auth
               .signInWithIdToken({
-                clientName: import.meta.env.VITE_GOOGLE_CLIENT_NAME,
+                clientName: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_NAME,
                 idToken: credential,
                 // Make sure this is the same nonce you passed as a prop
                 // to the GoogleLogin button
