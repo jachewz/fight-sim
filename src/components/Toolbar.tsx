@@ -64,7 +64,7 @@ export function Toolbar({
         icon={Save}
         label="Save"
         onClick={onSave}
-        isEnabled={isLoggedIn}
+        isEnabled={isLoggedIn && !isSaved}
       />
       <ToolbarButton
         icon={Share}
