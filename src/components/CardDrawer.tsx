@@ -29,11 +29,10 @@ export default function DrawingDrawer({
   function SelectableCard({ character }: { character: Character }) {
     return (
       <div
-        key={character.id}
         className="border rounded-lg aspect-[5/7] p-4"
-        onClick={(e) => handleCardSelect(e.currentTarget.id)}
+        onClick={() => handleCardSelect(character.id)}
       >
-        <h3 className="font-bold mb-2">{character.name}</h3>
+        <h3 className="font-bold mb-2 text-center">{character.name}</h3>
         <img
           src={character.image}
           alt={character.name}
@@ -44,18 +43,19 @@ export default function DrawingDrawer({
     );
   }
 
-  const listOfCards = characters.map((character) => (
-    <SelectableCard key={character.id} character={character} />
-  ));
+  const listOfCards = characters
+    .slice() // Create a copy of the array to avoid mutating the original
+    .reverse() // Reverse the order to show the latest card first
+    .map((character) => (
+      <SelectableCard key={character.id} character={character} />
+    ));
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader className="py-1">
           <DrawerTitle>Your Cards</DrawerTitle>
-          <DrawerDescription>
-            Select a card to edit 
-          </DrawerDescription>
+          <DrawerDescription>Select a card to edit</DrawerDescription>
         </DrawerHeader>
         <ScrollArea className=" px-2">
           <div className="flex w-max space-x-8 p-4">
@@ -63,8 +63,8 @@ export default function DrawingDrawer({
             <SelectableCard
               character={{
                 id: "new",
-                name: "New Character",
-                description: "Create a new character",
+                name: "New card",
+                description: "Create a new card",
                 image:
                   "data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E", // Empty SVG
               }}
