@@ -1,3 +1,5 @@
+'use client';
+
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { init, tx, id } from "@instantdb/react";

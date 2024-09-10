@@ -45,7 +45,7 @@ export default function DrawingDrawer({
   }
 
   const listOfCards = characters.map((character) => (
-    <SelectableCard character={character} />
+    <SelectableCard key={character.id} character={character} />
   ));
 
   return (
