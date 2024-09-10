@@ -2,9 +2,7 @@ import { useState } from "react";
 import { init } from "@instantdb/react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
-const APP_ID = "96a2b046-adac-44a6-8176-069d08706b6a";
-
-const db = init({ appId: APP_ID });
+const db = init({ appId: process.env.NEXT_PUBLIC_INSTANT_APP_ID! });
 
 export function LoginButton() {
   const [nonce] = useState(crypto.randomUUID());

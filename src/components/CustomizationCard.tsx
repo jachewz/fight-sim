@@ -9,6 +9,7 @@ import { Canvas } from "./Canvas";
 import type { Character } from "@/lib/types";
 import { LoginButton } from "./LoginButton";
 import { ShareDialog } from "./ShareDialog";
+import { DuelDialog } from "./DuelDialog";
 
 export default function CustomizationCard({
   character,
@@ -35,6 +36,7 @@ export default function CustomizationCard({
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [isSaved, setIsSaved] = useState(true);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isDuelDialogOpen, setIsDuelDialogOpen] = useState(false);
 
   useEffect(() => {
     if (history.length > 0) {
@@ -130,6 +132,12 @@ export default function CustomizationCard({
     }
   };
 
+  const handleDuel = () => {
+    if (isLoggedIn && isSaved) {
+      setIsDuelDialogOpen(true);
+    }
+  };
+
   return (
     <div className="flex gap-2 w-full justify-center mx-auto p-4">
       <Toolbar
@@ -184,19 +192,16 @@ export default function CustomizationCard({
             />
           </CardFooter>
         </Card>
-        {isLoggedIn ? (
-          <DuelButton
-            handleDuel={() => {
-              console.log("DUEL!");
-            }}
-          />
-        ) : (
-          <LoginButton />
-        )}
+        {isLoggedIn ? <DuelButton handleDuel={handleDuel} /> : <LoginButton />}
       </div>
       <ShareDialog
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
+        characterId={character.id}
+      />
+      <DuelDialog
+        isOpen={isDuelDialogOpen}
+        onClose={() => setIsDuelDialogOpen(false)}
         characterId={character.id}
       />
     </div>
