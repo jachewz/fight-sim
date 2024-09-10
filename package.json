@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@instantdb/admin": "^0.12.30",
     "@instantdb/core": "^0.12.22",
     "@instantdb/react": "^0.12.14",
     "@radix-ui/react-dialog": "^1.1.1",

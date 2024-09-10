@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -97,7 +97,7 @@ function Main({ user }: { user: User | undefined }) {
     );
   }
 
-  console.log("Main render drawer open?", isCardDrawerOpen);
+  console.log("Main render data:", data?.characters);
 
   return (
     <main className="flex ">

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@instantdb/admin':
+        specifier: ^0.12.30
+        version: 0.12.30
       '@instantdb/core':
         specifier: ^0.12.22
         version: 0.12.22
@@ -398,6 +401,9 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
+
+  '@instantdb/admin@0.12.30':
+    resolution: {integrity: sha512-uy0QZmwQZphM36WbnY/NZZxgdBx8QP2shRspkoDpdAtDeqJpKlAN+imBVKLyaZQoTpTkMs4Vm5S+KWBr86W/rA==}
 
   '@instantdb/core@0.12.14':
     resolution: {integrity: sha512-gEt0x0UHcWlBA4bQ6MRRMVnvCS5L9k+mSRh9E14kTi72EGnoHX74bZzWMIRF7X2HQv6+Q6+o0PQjPkF5EM1LSw==}
@@ -2956,6 +2962,10 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
+  '@instantdb/admin@0.12.30':
+    dependencies:
+      '@instantdb/core': 0.12.30
+
   '@instantdb/core@0.12.14':
     dependencies:
       immer: 9.0.14
@@ -2963,6 +2973,12 @@ snapshots:
       uuid: 9.0.1
 
   '@instantdb/core@0.12.22':
+    dependencies:
+      immer: 9.0.14
+      object-hash: 3.0.0
+      uuid: 9.0.1
+
+  '@instantdb/core@0.12.30':
     dependencies:
       immer: 9.0.14
       object-hash: 3.0.0
