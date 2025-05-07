@@ -30,7 +30,7 @@ export default function DrawingDrawer({
     return (
       <div
         key={character.id}
-        className="border rounded-lg aspect-[5/7] p-4"
+        className="border rounded-lg aspect-5/7 p-4"
         onClick={(e) => handleCardSelect(e.currentTarget.id)}
       >
         <h3 className="font-bold mb-2">{character.name}</h3>

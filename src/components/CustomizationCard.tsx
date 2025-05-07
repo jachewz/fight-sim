@@ -149,7 +149,7 @@ export default function CustomizationCard({
       />
       <div className="flex flex-col gap-4">
         <Card
-          className="bg-gradient-to-br aspect-[5/7] 
+          className="bg-linear-to-br aspect-5/7 
         from-primary/20 to-secondary/20 border-4 border-primary/50 rounded-xl overflow-clip"
         >
           <CardTitle className="text-center text-2xl font-bold text-primary px-2 pt-2">

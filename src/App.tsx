@@ -98,7 +98,7 @@ function Main({ user }: { user: User | undefined }) {
   console.log("Main render drawer open?", isCardDrawerOpen);
 
   return (
-    <main className="flex ">
+    <main>
       <div className="flex flex-1 flex-row items-center justify-center h-screen gap-y-4">
         <CustomizationCard
           key={currentCharacter.id} // Reset the state when the character changes by changing the key
